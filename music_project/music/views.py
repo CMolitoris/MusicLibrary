@@ -23,7 +23,7 @@ class SongList(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data,status=status.HTTP_201_CREATED)
-        return Response(serializer.erros,status=status.HTTP_400_BAD_REQUEST)     
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)     
 
 class SongDetail(APIView):
     def get_object(self,pk):
@@ -54,10 +54,13 @@ class SongDetail(APIView):
         song = self.get_object(pk)
         if field=='likes':
             updated_info=song.likes +1
+        # if field=='dislikes':
+        #     if song.dislikes==0:
+        #         serializer = SongSerializer(song)
+        #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        #     updated_info=song.dislikes -1    
         data = {field: updated_info}
         serializer = SongSerializer(song, data=data, partial=True)
-
-
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
